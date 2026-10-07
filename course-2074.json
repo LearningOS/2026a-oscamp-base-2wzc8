@@ -2,8 +2,8 @@
   "schema": 1,
   "courseId": 2074,
   "repository": "LearningOS/2026a-oscamp-base-2wzc8",
-  "commit": "b3506dd40017cc1e7a70ec27d1eb8e51bb9314c0",
-  "score": 7,
+  "commit": "7f359bd824bbf4ca8ceb52bd732d39971b7996a3",
+  "score": 11,
   "totalScore": 100,
   "exercises": [
     {
@@ -23,9 +23,9 @@
     {
       "name": "channel",
       "max": 4,
-      "score": 0,
-      "status": "fail",
-      "exitCode": 101
+      "score": 4,
+      "status": "pass",
+      "exitCode": 0
     },
     {
       "name": "process_pipe",
@@ -176,9 +176,9 @@
     }
   ],
   "student": "2wzc8",
-  "runId": "37604097554",
+  "runId": "37640365470",
   "runAttempt": "1",
   "upload": {
-    "status": "accepted"
+    "status": "pending"
   }
 }
