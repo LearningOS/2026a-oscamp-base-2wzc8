@@ -31,8 +31,9 @@
 //! Each function includes a `TODO` comment indicating where you need to write code.
 //! Run `cargo test` to check your implementations.
 
-use std::io::{self, Read, Write};
-use std::process::{Command, Stdio};
+use std::default;
+use std::io::{self, BufRead, Read, Write};
+use std::process::{Command, Output, Stdio};
 
 /// Execute the given shell command and return its stdout output.
 ///
@@ -53,7 +54,12 @@ pub fn run_command(program: &str, args: &[&str]) -> String {
     // TODO: Set stdout to Stdio::piped()
     // TODO: Execute with .output() and get output
     // TODO: Convert stdout to String and return
-    todo!()
+    let output = Command::new(program)
+        .args(args)
+        .stdout(Stdio::piped())
+        .output()
+        .expect("Failed to execute command");
+    String::from_utf8(output.stdout).expect("Output was not valid UTF-8")
 }
 
 /// Write data to child process (cat) stdin via pipe and read its stdout output.
@@ -89,7 +95,19 @@ pub fn pipe_through_cat(input: &str) -> String {
     // TODO: Write input to child process stdin
     // TODO: Drop stdin to close pipe (otherwise cat won't exit)
     // TODO: Read output from child process stdout
-    todo!()
+    let mut child = Command::new("cat")
+    .stdin(Stdio::piped())
+    .stdout(Stdio::piped())
+    .spawn()
+    .expect("Failed to spawn a child process");
+    let mut stdin = child.stdin.take().expect("Failed to open a stdin");
+    stdin.write_all(input.as_bytes()).expect("Failed to write a stdin");
+    drop(stdin);
+    let mut stdout = child.stdout.take().expect("Failed to open stdout");
+    let mut out_put = String::new();
+    stdout.read_to_string(&mut out_put).expect("Failed to output");
+    let _ = child.wait().expect("Failed to wait a child");
+    out_put
 }
 
 /// Get child process exit code.
@@ -110,7 +128,12 @@ pub fn get_exit_code(command: &str) -> i32 {
     // TODO: Use Command::new("sh").args(["-c", command])
     // TODO: Execute and get status
     // TODO: Return exit code
-    todo!()
+    Command::new("sh")
+    .args(["-c", command])
+    .status()
+    .expect("Failed to get a status")
+    .code()
+    .unwrap_or(0)
 }
 
 /// Execute the given shell command and return its stdout output as a `Result`.
@@ -137,7 +160,24 @@ pub fn run_command_with_result(program: &str, args: &[&str]) -> io::Result<Strin
     // TODO: Set stdout to Stdio::piped()
     // TODO: Execute with .output() and handle Result
     // TODO: Convert stdout to String with from_utf8, mapping errors to io::Error
-    todo!()
+    let output_result = Command::new(program)
+    .args(args)
+    .stdout(Stdio::piped())
+    .output();
+    match output_result {
+        Ok(out) => {
+            match String::from_utf8(out.stdout) {
+                // 转换成功，把字符串包在 Ok 里返回
+                Ok(s) => Ok(s),
+                // 转换失败（不是合法的 UTF-8），我们要把它变成 io::Error
+                Err(e) => {
+                    let io_err = io::Error::new(io::ErrorKind::InvalidData, e);
+                    Err(io_err)
+                }
+            }
+        }
+        Err(e) => Err(e),
+    }
 }
 
 /// Interact with `grep` via bidirectional pipes, filtering lines that contain a pattern.
@@ -167,7 +207,28 @@ pub fn pipe_through_grep(pattern: &str, input: &str) -> String {
     // TODO: Drop stdin to close pipe
     // TODO: Read output from child stdout line by line
     // TODO: Collect and return matching lines
-    todo!()
+    let mut child = Command::new("grep")
+    .arg(pattern)
+    .stdin(Stdio::piped())
+    .stdout(Stdio::piped())
+    .spawn()
+    .expect("Failed");
+    let mut stdin = child.stdin.take().expect("Failed");
+    stdin.write_all(input.as_bytes()).expect("Failed");
+    drop(stdin);
+    let mut stdout = child.stdout.take().expect("Failed to open stdout");
+    let mut raw_output = String::new();
+    
+    // 先一次性全部读出来
+    stdout.read_to_string(&mut raw_output).expect("Failed to read output");
+    
+    let mut out_put = String::new();
+    // 使用字符串自带的 .lines() 方法（返回的是没有换行符的 &str 迭代器）
+    for text in raw_output.lines() {
+        out_put.push_str(text);
+        out_put.push('\n');
+    };
+    out_put
 }
 
 #[cfg(test)]
