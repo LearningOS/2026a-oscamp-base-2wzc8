@@ -2,8 +2,8 @@
   "schema": 1,
   "courseId": 2074,
   "repository": "LearningOS/2026a-oscamp-base-2wzc8",
-  "commit": "7f359bd824bbf4ca8ceb52bd732d39971b7996a3",
-  "score": 11,
+  "commit": "1f53998c9871b57200dc43b80825f490c5ef1e4b",
+  "score": 15,
   "totalScore": 100,
   "exercises": [
     {
@@ -30,9 +30,9 @@
     {
       "name": "process_pipe",
       "max": 4,
-      "score": 0,
-      "status": "fail",
-      "exitCode": 101
+      "score": 4,
+      "status": "pass",
+      "exitCode": 0
     },
     {
       "name": "mem_primitives",
@@ -176,9 +176,9 @@
     }
   ],
   "student": "2wzc8",
-  "runId": "37640365470",
+  "runId": "38111505374",
   "runAttempt": "1",
   "upload": {
-    "status": "accepted"
+    "status": "pending"
   }
 }
