@@ -13,7 +13,7 @@
 //! When thread A writes with Release, and thread B reads the same location with Acquire,
 //! thread B will see all writes that thread A performed before the Release.
 
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering::{self, AcqRel, Acquire, Relaxed, Release}};
 
 /// Use Release-Acquire semantics to safely pass data between two threads.
 ///
@@ -40,7 +40,8 @@ impl FlagChannel {
     pub fn produce(&self, value: u32) {
         // TODO: Store data (choose appropriate Ordering)
         // TODO: Set ready = true (choose appropriate Ordering so data writes complete before this)
-        todo!()
+        self.data.store(value, Relaxed);
+        self.ready.store(true, Release);
     }
 
     /// Consumer: spin-wait for ready flag, then read data.
@@ -51,7 +52,8 @@ impl FlagChannel {
     pub fn consume(&self) -> u32 {
         // TODO: Spin-wait for ready to become true (choose appropriate Ordering)
         // TODO: Read data (choose appropriate Ordering)
-        todo!()
+        while !self.ready.load(Ordering::Acquire) {}
+        self.data.load(Relaxed)
     }
 
     /// Reset channel state
@@ -83,13 +85,29 @@ impl OnceCell {
     pub fn init(&self, val: u32) -> bool {
         // TODO: Use compare_exchange to ensure initialization only once
         // Store value on success
-        todo!()
+        match self.initialized.compare_exchange(false, true, AcqRel, Acquire) {
+            Ok(_) => {
+                self.value.store(val, Relaxed);
+                return true
+            }
+            Err(_) => {
+                return false
+            }
+        }
+        
     }
 
     /// Get value. Returns Some if initialized, otherwise None.
     pub fn get(&self) -> Option<u32> {
         // TODO: Check initialized flag, then read value
-        todo!()
+        match self.initialized.load(Acquire) {
+            true => {
+                return Some(self.value.load(Acquire))
+            }
+            false => {
+                return None
+            }
+        }
     }
 }
 
