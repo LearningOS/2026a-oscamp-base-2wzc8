@@ -2,8 +2,8 @@
   "schema": 1,
   "courseId": 2074,
   "repository": "LearningOS/2026a-oscamp-base-2wzc8",
-  "commit": "c83e3bf2e420d72803ef47329314fb0bd0c52585",
-  "score": 79,
+  "commit": "67f65e6c86147a2d15a11a7e2586b02c96fc36ea",
+  "score": 86,
   "totalScore": 100,
   "exercises": [
     {
@@ -135,16 +135,16 @@
     {
       "name": "async_channel_ex",
       "max": 3,
-      "score": 0,
-      "status": "fail",
-      "exitCode": 101
+      "score": 3,
+      "status": "pass",
+      "exitCode": 0
     },
     {
       "name": "select_timeout",
       "max": 4,
-      "score": 0,
-      "status": "fail",
-      "exitCode": 101
+      "score": 4,
+      "status": "pass",
+      "exitCode": 0
     },
     {
       "name": "pte_flags",
@@ -176,9 +176,9 @@
     }
   ],
   "student": "2wzc8",
-  "runId": "38853335157",
+  "runId": "39006390005",
   "runAttempt": "1",
   "upload": {
-    "status": "accepted"
+    "status": "pending"
   }
 }
